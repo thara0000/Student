@@ -11,6 +11,10 @@ const form = useForm({
     function storeStudent() {
       form.post('/students')
     }
+    const props  = defineProps({
+        errors: Object,
+});
+
 </script>
 
 <template>
@@ -37,12 +41,14 @@ const form = useForm({
                                     <div class="mt-1">
                                         <input type="text" v-model="form.name" id="name" wire:model.lazy="name" name="name" class="block w-full transition duration-150 ease-in-out appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
+                                    <div style="color:red" v-if="errors.name">{{ errors.name }}</div>
                                 </div>
                                 <div class="sm:col-span-6">
                                     <label for="age" class="block text-sm font-medium text-gray-700"> Age </label>
                                     <div class="mt-1">
                                         <input type="text" v-model="form.age" id="age" wire:model.lazy="age" name="age" class="block w-full transition duration-150 ease-in-out appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
+                                    <div style="color:red" v-if="errors.age">{{ errors.age }}</div>
                                 </div>
                                 <div class="sm:col-span-6">
                                     <label for="status" class="block text-sm font-medium text-gray-700"> Status </label>
@@ -53,6 +59,7 @@ const form = useForm({
                                         </select>
                                         <!-- <input type="text" id="title" wire:model.lazy="title" name="title" class="block w-full transition duration-150 ease-in-out appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" /> -->
                                     </div>
+                                    <div style="color:red" v-if="errors.status">{{ errors.status }}</div>
                                 </div>
                                 <div class="sm:col-span-6">
                                     <label for="title" class="block text-sm font-medium text-gray-700"> Image </label>
@@ -61,6 +68,7 @@ const form = useForm({
                                         @input="form.image = $event.target.files[0]" 
                                         wire:model="newImage" name="image" class="block w-full transition duration-150 ease-in-out appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     </div>
+                                    <div style="color:red" v-if="errors.image">{{ errors.image }}</div>
                                 </div>
                                 <div class="m-2 p-2">
                                     <button type="submit" class="px-4 py-2 bg-indigo-500 hover:bg-green-600 rounded-lg text-white">Create</button>

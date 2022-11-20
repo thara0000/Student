@@ -54,6 +54,12 @@ class StudentController extends Controller
         //
         // $student = Student::create($request['obj']);
         //return $request['obj'];
+        $request->validate([
+            'name' => ['required', 'max:50'],
+            'age' => ['required', 'max:50'],
+            'status' => ['required', 'max:50'],
+            'image' => ['required','mimes:jpeg,jpg,png,gif']
+        ]);
         if($request->file('image')){
             $image = $request->file('image')->store('students','public');
 
@@ -111,6 +117,12 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         //
+        $request->validate([
+            'name' => ['required', 'max:50'],
+            'age' => ['required', 'max:50'],
+            'status' => ['required', 'max:50'],
+            
+        ]);
         $image = $student->image;
         
         if($request->file('image')){
