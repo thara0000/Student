@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Resources\StudentResource;
+use domain\Facades\StudentFacade;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect as FacadesRedirect;
+use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Inertia\Inertia;
 use Redirect;
 use Storage;
@@ -17,10 +21,9 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
-        $students = Student::all();
+        $students = StudentFacade::all();
             return Inertia::render('Students/index',[
-                'students'=>Student::all()->map(function($data){
+                'students'=>$students->map(function($data){
                 return [
                         'id'=>$data->id,
                         'name'=>$data->name,
@@ -39,8 +42,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
-        return Inertia::render('Students/Create');
+        return StudentFacade::create();
     }
 
     /**
@@ -51,34 +53,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // $student = Student::create($request['obj']);
-        //return $request['obj'];
-        $request->validate([
-            'name' => ['required', 'max:50'],
-            'age' => ['required', 'max:50'],
-            'status' => ['required', 'max:50'],
-            'image' => ['required','mimes:jpeg,jpg,png,gif']
-        ]);
-        if($request->file('image')){
-            $image = $request->file('image')->store('students','public');
-
-        }else {
-            $image=NULL;
-        }
-        
-        $newStudent = Student::create([
-            'name'=>$request->input('name'),
-            'age'=>$request->input('age'),
-            'status'=>$request->input('status'),
-            'image'=>$image
-        ]);
-        if($newStudent){
-            return Redirect::route('student.index')->with('message', 'Successfully Saved');
-        }else{
-            return Redirect::route('student.index')->with('message', 'Unable to create new student');
-        }
-        
+       return StudentFacade::store($request);
+       
     }
 
     /**
@@ -98,50 +74,19 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit(Student $student_id)
     {
-        //
-        return Inertia::render('Students/Edit',[
-            'student'=> $student,
-            'image'=>asset('storage/'.$student->image),
-        ]);
+      
+        return StudentFacade::edit($student_id);
+      
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Student  $student
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Student $student)
+   
+    public function update(Request $request, $student_id)
     {
-        //
-        $request->validate([
-            'name' => ['required', 'max:50'],
-            'age' => ['required', 'max:50'],
-            'status' => ['required', 'max:50'],
-            
-        ]);
-        $image = $student->image;
-        
-        if($request->file('image')){
-            Storage::delete('public/'.$student->image);
-            $image = $request->file('image')->store('students','public');
+      
+        return StudentFacade::update($request,$student_id);
 
-        }
-       $updateStudent =  $student->update([
-            'name'=>$request->input('name'),
-            'age'=>$request->input('age'),
-            'status'=>$request->input('status'),
-            'image'=>$image
-        ]);
-        if($updateStudent){
-            return Redirect::route('student.index')->with('message', 'Successfully Updated');
-        }else{
-            return Redirect::route('student.index')->with('message', 'Unable Update');
-        }
-       // return Redirect::route('student.index');
     }
 
     /**
@@ -150,16 +95,10 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy($student_id)
     {
-        //
-        Storage::delete('public/'.$student->image);
-        $deleteStudent = $student->delete();
-        //return Redirect::route('student.index');
-        if($deleteStudent){
-            return Redirect::route('student.index')->with('message', 'Successfully Deleted');
-        }else{
-            return Redirect::route('student.index')->with('message', 'Unable Delete ');
-        }
+       
+        return StudentFacade::destroy($student_id);
+       
     }
 }
